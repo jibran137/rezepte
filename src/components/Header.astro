@@ -8,6 +8,8 @@ interface Props {
 
 const { lang } = Astro.props;
 const homeHref = localizedPath(lang, '/');
+const deHref = localizedPath('de', '/');
+const enHref = localizedPath('en', '/');
 ---
 
 <header class="site-header">
@@ -18,9 +20,9 @@ const homeHref = localizedPath(lang, '/');
     </a>
 
     <nav class="lang-toggle" aria-label="Language">
-      <a href="/" class={lang === 'de' ? 'active' : ''}>DE</a>
+      <a href={deHref} class={lang === 'de' ? 'active' : ''}>DE</a>
       <span class="sep">·</span>
-      <a href="/en/" class={lang === 'en' ? 'active' : ''}>EN</a>
+      <a href={enHref} class={lang === 'en' ? 'active' : ''}>EN</a>
     </nav>
   </div>
 </header>

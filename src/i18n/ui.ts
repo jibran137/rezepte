@@ -47,6 +47,10 @@ export function t(lang: Lang, key: keyof (typeof ui)['de']): string {
 }
 
 export function localizedPath(lang: Lang, path: string): string {
-  const clean = path.startsWith('/') ? path : `/${path}`;
-  return lang === defaultLang ? clean : `/en${clean === '/' ? '' : clean}`;
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  const clean = path.replace(/^\//, '');
+  if (lang === defaultLang) {
+    return clean ? `${base}/${clean}` : `${base}/`;
+  }
+  return clean ? `${base}/en/${clean}` : `${base}/en/`;
 }
