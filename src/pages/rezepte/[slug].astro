@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import Ornament from '../../components/Ornament.astro';
 import { t, localizedPath } from '../../i18n/ui';
 
 export async function getStaticPaths() {
@@ -19,54 +20,61 @@ const data = recipe.data;
 
 <Layout title={`${data.title} — rezepte`} description={data.summary} lang={lang}>
   <div class="container">
-    <article class="recipe-detail">
-      <a href={localizedPath(lang, '/')} class="back-link">{t(lang, 'recipe.back')}</a>
+    <article class="recipe-detail-page">
+      <a href={localizedPath(lang, '/')} class="back-link">Zurück zur Sammlung</a>
 
-      <header class="recipe-header">
+      <header class="recipe-hero">
+        <p class="eyebrow">{data.tags[0] ?? 'Rezept'}</p>
         <h1>{data.title}</h1>
-        <p class="byline">
-          {t(lang, 'recipe.by')} <strong>{data.author}</strong>
-          {data.city && <>, {t(lang, 'recipe.in')} <strong>{data.city}</strong></>}
-        </p>
         {data.summary && <p class="summary">{data.summary}</p>}
-
-        <div class="recipe-stats">
-          {data.servings && (
-            <div>
-              <span class="stat-label">{t(lang, 'recipe.servings')}</span>
-              <span class="stat-value">{data.servings}</span>
-            </div>
-          )}
-          {data.time_minutes && (
-            <div>
-              <span class="stat-label">{t(lang, 'recipe.time')}</span>
-              <span class="stat-value">{data.time_minutes} {t(lang, 'recipe.minutes')}</span>
-            </div>
-          )}
-        </div>
       </header>
 
-      <section class="ingredients">
-        <h2>{t(lang, 'recipe.ingredients')}</h2>
-        <ul>
+      <Ornament />
+
+      <section class="recipe-stats">
+        {data.servings && (
+          <div class="stat">
+            <span class="stat-label">{t(lang, 'recipe.servings')}</span>
+            <span class="stat-value">{data.servings}</span>
+          </div>
+        )}
+        {data.time_minutes && (
+          <div class="stat">
+            <span class="stat-label">{t(lang, 'recipe.time')}</span>
+            <span class="stat-value">{data.time_minutes}<span class="unit">{t(lang, 'recipe.minutes')}</span></span>
+          </div>
+        )}
+        <div class="stat">
+          <span class="stat-label">{t(lang, 'recipe.by')}</span>
+          <span class="stat-author">
+            {data.author}
+            {data.city && <small>{data.city}</small>}
+          </span>
+        </div>
+      </section>
+
+      <section class="ingredients-section">
+        <h2 class="ingredients-heading">{t(lang, 'recipe.ingredients')}</h2>
+        <p class="ingredients-subhead">was du brauchst</p>
+        <ol class="ingredients-list">
           {data.ingredients.map((ing) => (
             <li>
-              <span>{ing.item}</span>
+              <span class="item">{ing.item}</span>
               {ing.amount && <span class="amount">{ing.amount}</span>}
             </li>
           ))}
-        </ul>
+        </ol>
+
+        {data.tags.length > 0 && (
+          <div class="tags">
+            {data.tags.map((tag) => <span class="tag">{tag}</span>)}
+          </div>
+        )}
       </section>
 
       <div class="recipe-body">
         <Content />
       </div>
-
-      {data.tags.length > 0 && (
-        <div class="tags">
-          {data.tags.map((tag) => <span class="tag">{tag}</span>)}
-        </div>
-      )}
     </article>
   </div>
 </Layout>

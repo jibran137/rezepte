@@ -2,25 +2,42 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import RecipeCard from '../../components/RecipeCard.astro';
+import Sun from '../../components/Sun.astro';
 import { t } from '../../i18n/ui';
 
 const lang = 'en' as const;
 const recipes = (await getCollection('recipes')).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
+const totalLabel = String(recipes.length).padStart(2, '0');
 ---
 
-<Layout title="rezepte — Home-cooked recipes from Germany" description={t(lang, 'site.tagline')} lang={lang}>
+<Layout
+  title="rezepte — Home-cooked recipes from Germany"
+  description={t(lang, 'site.tagline')}
+  lang={lang}
+>
   <div class="container">
     <section class="hero">
+      <Sun size={110} spinning={true} class="hero-mark" />
+      <p class="hero-eyebrow">An open collection</p>
       <h1>
-        Recipes <em>from German home kitchens.</em>
+        Recipes from<br />
+        <span class="underline-swoop">German</span> <em class="swash">home kitchens.</em>
       </h1>
-      <p>{t(lang, 'site.intro')}</p>
+      <p class="lede">{t(lang, 'site.intro')}</p>
     </section>
 
-    <section class="recipe-grid">
-      {recipes.map((recipe) => <RecipeCard recipe={recipe} lang={lang} />)}
+    <section>
+      <header class="section-title">
+        <span>All recipes</span>
+        <span class="count">{totalLabel}</span>
+      </header>
+      <ol class="recipe-list">
+        {recipes.map((recipe, i) => (
+          <RecipeCard recipe={recipe} lang={lang} index={i + 1} />
+        ))}
+      </ol>
     </section>
   </div>
 </Layout>

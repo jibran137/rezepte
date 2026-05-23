@@ -5,24 +5,37 @@ import { type Lang, localizedPath } from '../i18n/ui';
 interface Props {
   recipe: CollectionEntry<'recipes'>;
   lang: Lang;
+  index: number;
 }
 
-const { recipe, lang } = Astro.props;
+const { recipe, lang, index } = Astro.props;
 const data = recipe.data;
 const title = lang === 'en' && data.title_en ? data.title_en : data.title;
 const summary = lang === 'en' && data.summary_en ? data.summary_en : data.summary;
 const href = localizedPath(lang, `/rezepte/${recipe.slug}`);
 const place = data.city ?? '';
+
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+const numeral = ROMAN[index - 1] ?? String(index);
+
+const minutesLabel = lang === 'en' ? 'min' : 'Min';
+const servingsLabel = lang === 'en' ? 'serves' : 'für';
 ---
 
-<a href={href} class="recipe-card">
-  <span class="meta">
-    {data.tags[0] ?? 'rezept'}
-    {data.time_minutes ? ` · ${data.time_minutes} min` : ''}
-  </span>
-  <h3>{title}</h3>
-  {summary && <p class="summary">{summary}</p>}
-  <span class="author">
-    {data.author}{place ? ` · ${place}` : ''}
-  </span>
-</a>
+<li class="recipe-row">
+  <a href={href} aria-label={title}></a>
+  <span class="recipe-number">{numeral}.</span>
+  <div class="recipe-content">
+    <h2>{title}</h2>
+    {summary && <p class="summary">{summary}</p>}
+    <p class="byline">
+      {data.author}{place ? ` — ${place}` : ''}
+    </p>
+  </div>
+  <div class="recipe-meta">
+    {data.time_minutes && (
+      <strong>{data.time_minutes}<span class="unit">{minutesLabel}</span></strong>
+    )}
+    {data.servings && <span>{servingsLabel} {data.servings}</span>}
+  </div>
+</li>
