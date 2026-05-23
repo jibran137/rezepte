@@ -1,0 +1,27 @@
+---
+import { type Lang, localizedPath } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const homeHref = localizedPath(lang, '/');
+---
+
+<header class="site-header">
+  <div class="container">
+    <a href={homeHref} class="brand">
+      <span class="brand-mark">✦</span>
+      <span>rezepte</span>
+    </a>
+
+    <nav class="nav-right">
+      <span class="lang-toggle">
+        <a href="/" class={lang === 'de' ? 'active' : ''}>DE</a>
+        <span class="sep">/</span>
+        <a href="/en/" class={lang === 'en' ? 'active' : ''}>EN</a>
+      </span>
+    </nav>
+  </div>
+</header>

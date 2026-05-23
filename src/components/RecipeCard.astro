@@ -1,0 +1,28 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { type Lang, localizedPath } from '../i18n/ui';
+
+interface Props {
+  recipe: CollectionEntry<'recipes'>;
+  lang: Lang;
+}
+
+const { recipe, lang } = Astro.props;
+const data = recipe.data;
+const title = lang === 'en' && data.title_en ? data.title_en : data.title;
+const summary = lang === 'en' && data.summary_en ? data.summary_en : data.summary;
+const href = localizedPath(lang, `/rezepte/${recipe.slug}`);
+const place = data.city ?? '';
+---
+
+<a href={href} class="recipe-card">
+  <span class="meta">
+    {data.tags[0] ?? 'rezept'}
+    {data.time_minutes ? ` · ${data.time_minutes} min` : ''}
+  </span>
+  <h3>{title}</h3>
+  {summary && <p class="summary">{summary}</p>}
+  <span class="author">
+    {data.author}{place ? ` · ${place}` : ''}
+  </span>
+</a>

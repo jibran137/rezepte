@@ -1,0 +1,74 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import { t, localizedPath } from '../../../i18n/ui';
+
+export async function getStaticPaths() {
+  const recipes = await getCollection('recipes');
+  return recipes.map((recipe) => ({
+    params: { slug: recipe.slug },
+    props: { recipe },
+  }));
+}
+
+const lang = 'en' as const;
+const { recipe } = Astro.props;
+const { Content } = await recipe.render();
+const data = recipe.data;
+const title = data.title_en ?? data.title;
+const summary = data.summary_en ?? data.summary;
+---
+
+<Layout title={`${title} — rezepte`} description={summary} lang={lang}>
+  <div class="container">
+    <article class="recipe-detail">
+      <a href={localizedPath(lang, '/')} class="back-link">{t(lang, 'recipe.back')}</a>
+
+      <header class="recipe-header">
+        <h1>{title}</h1>
+        <p class="byline">
+          {t(lang, 'recipe.by')} <strong>{data.author}</strong>
+          {data.city && <>, {t(lang, 'recipe.in')} <strong>{data.city}</strong></>}
+        </p>
+        {summary && <p class="summary">{summary}</p>}
+
+        <div class="recipe-stats">
+          {data.servings && (
+            <div>
+              <span class="stat-label">{t(lang, 'recipe.servings')}</span>
+              <span class="stat-value">{data.servings}</span>
+            </div>
+          )}
+          {data.time_minutes && (
+            <div>
+              <span class="stat-label">{t(lang, 'recipe.time')}</span>
+              <span class="stat-value">{data.time_minutes} {t(lang, 'recipe.minutes')}</span>
+            </div>
+          )}
+        </div>
+      </header>
+
+      <section class="ingredients">
+        <h2>{t(lang, 'recipe.ingredients')}</h2>
+        <ul>
+          {data.ingredients.map((ing) => (
+            <li>
+              <span>{ing.item_en ?? ing.item}</span>
+              {ing.amount && <span class="amount">{ing.amount}</span>}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <div class="recipe-body">
+        <Content />
+      </div>
+
+      {data.tags.length > 0 && (
+        <div class="tags">
+          {data.tags.map((tag) => <span class="tag">{tag}</span>)}
+        </div>
+      )}
+    </article>
+  </div>
+</Layout>

@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import RecipeCard from '../components/RecipeCard.astro';
+import { t } from '../i18n/ui';
+
+const lang = 'de' as const;
+const recipes = (await getCollection('recipes')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<Layout title="rezepte — Hausgemachte Rezepte aus Deutschland" description={t(lang, 'site.tagline')} lang={lang}>
+  <div class="container">
+    <section class="hero">
+      <h1>
+        Rezepte <em>aus deutschen Küchen.</em>
+      </h1>
+      <p>{t(lang, 'site.intro')}</p>
+    </section>
+
+    <section class="recipe-grid">
+      {recipes.map((recipe) => <RecipeCard recipe={recipe} lang={lang} />)}
+    </section>
+  </div>
+</Layout>
