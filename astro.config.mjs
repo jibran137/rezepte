@@ -5,8 +5,8 @@ export default defineConfig({
   base: '/rezepte',
   trailingSlash: 'ignore',
   i18n: {
-    defaultLocale: 'de',
-    locales: ['de', 'en'],
+    defaultLocale: 'en',
+    locales: ['en', 'de'],
     routing: {
       prefixDefaultLocale: false,
     },

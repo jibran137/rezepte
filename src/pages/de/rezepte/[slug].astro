@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import RecipeDetail from '../../components/RecipeDetail.astro';
+import RecipeDetail from '../../../components/RecipeDetail.astro';
 
 export async function getStaticPaths() {
   const recipes = await getCollection('recipes');
@@ -13,4 +13,4 @@ export async function getStaticPaths() {
 const { recipe } = Astro.props;
 ---
 
-<RecipeDetail lang="en" recipe={recipe} />
+<RecipeDetail lang="de" recipe={recipe} />

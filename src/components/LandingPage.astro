@@ -1,11 +1,15 @@
 ---
 import { getCollection } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import RecipeCard from '../../components/RecipeCard.astro';
-import Sun from '../../components/Sun.astro';
-import { t } from '../../i18n/ui';
+import Layout from '../layouts/Layout.astro';
+import RecipeCard from './RecipeCard.astro';
+import Sun from './Sun.astro';
+import { type Lang, t } from '../i18n/ui';
 
-const lang = 'en' as const;
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
 const recipes = (await getCollection('recipes')).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
@@ -13,24 +17,25 @@ const totalLabel = String(recipes.length).padStart(2, '0');
 ---
 
 <Layout
-  title="rezepte — Home-cooked recipes from Germany"
+  title={t(lang, 'meta.home.title')}
   description={t(lang, 'site.tagline')}
   lang={lang}
 >
   <div class="container">
     <section class="hero">
       <Sun size={110} spinning={true} class="hero-mark" />
-      <p class="hero-eyebrow">An open collection</p>
+      <p class="hero-eyebrow">{t(lang, 'hero.eyebrow')}</p>
       <h1>
-        Recipes from<br />
-        <span class="underline-swoop">German</span> <em class="swash">home kitchens.</em>
+        {t(lang, 'hero.title.before')}<br />
+        <span class="underline-swoop">{t(lang, 'hero.title.swoop')}</span>
+        <em class="swash">{t(lang, 'hero.title.swash')}</em>
       </h1>
       <p class="lede">{t(lang, 'site.intro')}</p>
     </section>
 
     <section>
       <header class="section-title">
-        <span>All recipes</span>
+        <span>{t(lang, 'section.allRecipes')}</span>
         <span class="count">{totalLabel}</span>
       </header>
       <ol class="recipe-list">

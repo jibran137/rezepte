@@ -1,6 +1,7 @@
 ---
 import Sun from './Sun.astro';
-import { type Lang, localizedPath } from '../i18n/ui';
+import ThemeToggle from './ThemeToggle.astro';
+import { type Lang, t, localizedPath } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
@@ -19,10 +20,13 @@ const enHref = localizedPath('en', '/');
       <span><em>rezepte</em></span>
     </a>
 
-    <nav class="lang-toggle" aria-label="Language">
-      <a href={deHref} class={lang === 'de' ? 'active' : ''}>DE</a>
-      <span class="sep">·</span>
-      <a href={enHref} class={lang === 'en' ? 'active' : ''}>EN</a>
-    </nav>
+    <div class="header-actions">
+      <nav class="lang-toggle" aria-label="Language">
+        <a href={enHref} class={lang === 'en' ? 'active' : ''}>EN</a>
+        <span class="sep">·</span>
+        <a href={deHref} class={lang === 'de' ? 'active' : ''}>DE</a>
+      </nav>
+      <ThemeToggle label={t(lang, 'theme.toggle')} />
+    </div>
   </div>
 </header>

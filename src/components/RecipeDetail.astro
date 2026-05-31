@@ -1,32 +1,28 @@
 ---
-import { getCollection } from 'astro:content';
-import Layout from '../../../layouts/Layout.astro';
-import Ornament from '../../../components/Ornament.astro';
-import { t, localizedPath } from '../../../i18n/ui';
+import type { CollectionEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Ornament from './Ornament.astro';
+import { type Lang, t, localizedPath } from '../i18n/ui';
 
-export async function getStaticPaths() {
-  const recipes = await getCollection('recipes');
-  return recipes.map((recipe) => ({
-    params: { slug: recipe.slug },
-    props: { recipe },
-  }));
+interface Props {
+  lang: Lang;
+  recipe: CollectionEntry<'recipes'>;
 }
 
-const lang = 'en' as const;
-const { recipe } = Astro.props;
+const { lang, recipe } = Astro.props;
 const { Content } = await recipe.render();
 const data = recipe.data;
-const title = data.title_en ?? data.title;
-const summary = data.summary_en ?? data.summary;
+const title = lang === 'en' && data.title_en ? data.title_en : data.title;
+const summary = lang === 'en' && data.summary_en ? data.summary_en : data.summary;
 ---
 
 <Layout title={`${title} — rezepte`} description={summary} lang={lang}>
   <div class="container">
     <article class="recipe-detail-page">
-      <a href={localizedPath(lang, '/')} class="back-link">Back to the collection</a>
+      <a href={localizedPath(lang, '/')} class="back-link">{t(lang, 'recipe.back')}</a>
 
       <header class="recipe-hero">
-        <p class="eyebrow">{data.tags[0] ?? 'Recipe'}</p>
+        <p class="eyebrow">{data.tags[0] ?? t(lang, 'recipe.fallbackTag')}</p>
         <h1>{title}</h1>
         {summary && <p class="summary">{summary}</p>}
       </header>
@@ -57,11 +53,11 @@ const summary = data.summary_en ?? data.summary;
 
       <section class="ingredients-section">
         <h2 class="ingredients-heading">{t(lang, 'recipe.ingredients')}</h2>
-        <p class="ingredients-subhead">what you'll need</p>
+        <p class="ingredients-subhead">{t(lang, 'recipe.ingredients.subhead')}</p>
         <ol class="ingredients-list">
           {data.ingredients.map((ing) => (
             <li>
-              <span class="item">{ing.item_en ?? ing.item}</span>
+              <span class="item">{lang === 'en' && ing.item_en ? ing.item_en : ing.item}</span>
               {ing.amount && <span class="amount">{ing.amount}</span>}
             </li>
           ))}
